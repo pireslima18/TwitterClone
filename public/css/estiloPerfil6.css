@@ -1,0 +1,109 @@
+.perfil-info{
+	/*border: 1px solid red;*/
+	width: 100%;
+	height: 100vh;
+	position: relative;
+}
+
+.perfil-capa{
+	background: lightskyblue;
+	/*border: 1px solid black;*/
+	width: 100%;
+	/*height: 250px;*/
+	height: 30%;
+	max-height: 30%;
+}
+
+.perfil-foto img{
+	background: white;
+	border: 6px solid white;
+	border-radius: 50%;
+	width: 180px;
+	height: 180px;
+	position: absolute;
+	top: 19%;
+	left: 2%;
+}
+
+.editar-perfil{
+	display: inline-block;
+	padding: 6px;
+	position: absolute;
+	top: 31%;
+	right: 10%;
+}
+
+.perfil-data{
+	margin-top: 110px;
+}
+
+.dados-perfil{
+	/*border: 1px solid black;*/
+	margin-top: 6%;
+	margin-left: 2%;
+}
+
+.nomeUsuario{
+	font-weight: bold;
+	font-size: 1.25em;
+}
+
+.perfil-tweets{
+	/*border: 1px solid black;*/
+	margin-top: 2%;
+	margin-left: 2%;
+	margin-right: 2%;
+	max-width: 1260px;
+}
+
+/* medias */
+
+@media (max-width: 584.98px) {
+
+	.perfil-capa{
+		height: 15%;
+	}
+
+	.editar-perfil{
+		top: 16.5%;
+		right: 10%;
+	}
+
+	.perfil-foto img{
+		border: 6px solid white;
+		border-radius: 50%;
+		width: 110px;
+		height: 110px;
+		position: absolute;
+		top: 10%;
+		left: 2%;
+	}
+
+	.nav-link{
+		font-size: 0.7em;
+	}
+
+}
+
+@media (min-width: 585px) and (max-width: 991.98px) {
+
+	.perfil-capa{
+		height: 20%;
+	}
+
+	.editar-perfil{
+		top: 22%;
+		right: 10%;
+	}
+
+	.perfil-foto img{
+		border: 6px solid white;
+		border-radius: 50%;
+		width: 150px;
+		height: 150px;
+		position: absolute;
+		top: 13%;
+		left: 2%;
+	}
+
+}

@@ -1,0 +1,37 @@
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+	<li class="nav-item">
+		<a class="nav-link" href="#" role="tab" id="tweets"><?= $this->view->total_tweets['total_tweets']?> Tweets</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link active bg-primary text-white" href="#" id="seguindo"><?= $this->view->total_seguindo['total_seguindo'] ?> Seguindo</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="#" id="seguidores"><?= $this->view->total_seguidores['total_seguidores'] ?> Seguidores</a>
+	</li>
+</ul>
+
+<?php foreach ($this->view->usuarios as $indice_arr => $usuario) { if($usuario['seguindo_sn'] == 0){continue;} ?>
+	<div class="card">
+		<div class="card-body d-flex">
+			<div>
+		    	<img src="<?= !empty($usuario['path']) ? $usuario['path']: 'fotos_usuarios/sem_foto.png'?>" class="rounded-circle me-2" width="45px" height="45px">
+		    </div>
+			<div>
+				<p><?= $usuario['nome']?></p>
+				<?php if($usuario['seguindo_sn'] == 1) {?>
+				<a href="acao?acao=deixar_de_seguir&id_usuario=<?=$usuario['id']?>" class="btn btn-danger" id="deixar_de_seguir" value="<?=$usuario['id']?>">Deixar de seguir</a>
+				<?php }?>
+			</div>
+		</div>
+	</div>
+<?php } if($this->view->total_seguindo['total_seguindo'] == 0){?>
+
+	<div class="card card-nullmessage">
+		<div class="card-body text-center">
+			<img class="" src="img/nullmessage3.png" height="201px">
+			<h4 class="card-title strong">Você ainda não segue ninguém</h5>
+			<h6 class="card-subtitle mb-2 ">Faça amigos e amplie sua rede</h6>
+		</div>
+	</div>
+
+<?php } ?>

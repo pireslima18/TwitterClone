@@ -1,0 +1,46 @@
+
+<?php foreach($this->view->comentarios as $indice => $comentario) {?>
+	<div class="position-relative" id="container-comentario<?=$comentario['id']?>">
+		
+		<div class="card-body d-flex">
+
+			<div class="rounded-circle position-absolute" style="height: 8px; width: 8px; background: #ccc; top: 35px;left: 0px;"></div>
+			
+			<div>
+		    	<img src="<?= !empty($comentario['path']) ? $comentario['path']: 'fotos_usuarios/sem_foto.png'?>" class="rounded-circle me-2" width="45px" height="45px">
+		    </div>
+			<div>
+				<p><strong><?= $comentario['nome']?></strong> <small><span class="text text-muted">- <?= $comentario['data']?></span></small><?php if($comentario['id_usuario'] == $_SESSION['id']){?><a href="remover_comentario?id_comentario=<?= $comentario['id']?>" class="botao-tweet" id="removerComentario" value="<?=$comentario['id']?>" name="<?= $comentario['id_tweet'] ?>"><i class="far fa-trash-alt" class="text-danger"></i></a><?php }?></p>
+		        <p class="card-text text-break"><?= $comentario['comentario']?></p>
+		        <p class="card-text">
+		        	<small class="text-muted">
+		        		<span class="me-3">
+		        			<?php if($comentario['curtido_sn'] == 0){?>
+			        			<a href="acao?acao=curtirComentario&id_comentario=<?=$comentario['id']?>" class="text-secondary text-decoration-none" id="curtirComentario" value="<?=$comentario['id']?>">
+				        			<i class="far fa-heart"></i>
+			        			</a>
+		        			<?php } if($comentario['curtido_sn'] == 1){?>
+			        			<a href="acao?acao=descurtirComentario&id_comentario=<?=$comentario['id']?>" class="text-secondary text-decoration-none" id="descurtirComentario" value="<?=$comentario['id']?>">
+				        			<i class="fas fa-heart text-danger"></i>
+			        			</a>
+		        			<?php } ?>
+		        			<span id="curtidasComentario<?=$comentario['id']?>">
+			        			<?=$comentario['curtidas']?>
+		        			</span>
+		        		</span>
+  					</small>
+		        </p>
+			</div>
+		</div>
+	</div>
+<?php } if(empty($this->view->comentarios)){?>
+
+	<div class="card card-nullmessage" style="max-width: 400px;">
+		<div class="card-body text-center">
+			<img class="img-fluid" src="img/nullmessage2.png">
+			<h4 class="card-title ">Ainda não há comentários</h5>
+			<h6 class="card-subtitle mb-2 ">Seja o primeiro a comentar</h6>
+		</div>
+	</div>
+
+<?php } ?>

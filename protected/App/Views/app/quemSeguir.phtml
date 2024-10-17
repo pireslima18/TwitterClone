@@ -1,0 +1,230 @@
+<nav class="navbar navbar-expand-lg menu">
+	<div class="container">
+	  <div class="navbar-nav">
+			<img src="img/twitter_logo.png" class="menuIco" />
+	  </div>
+	</div>
+</nav>
+
+<div class="container mt-5">
+	<div class="row pt-2">
+		
+		<div class="col-md-3">
+
+			<div class="perfil">
+				<div class="perfilTopo">
+
+				</div>
+
+				<div class="perfilPainel">
+					
+					<div class="row mt-2 mb-2">
+						<div class="col mb-2">
+							<span class="perfilPainelNome">
+
+								<?= $this->view->info_usuario['nome']?>
+									
+							</span>
+						</div>
+					</div>
+
+					<div class="row mb-2">
+
+						<div class="col">
+							<span class="perfilPainelItem">Tweets</span><br />
+							<span class="perfilPainelItemValor">
+								
+								<?= $this->view->total_tweets['total_tweets'] ?>
+
+							</span>
+						</div>
+
+						<div class="col">
+							<span class="perfilPainelItem">Seguindo</span><br />
+							<span class="perfilPainelItemValor" id="seguindo">
+								
+								<?= $this->view->total_seguindo['total_seguindo'] ?>
+
+							</span>
+						</div>
+
+						<div class="col">
+							<span class="perfilPainelItem">Seguidores</span><br />
+							<span class="perfilPainelItemValor">
+								
+								<?= $this->view->total_seguidores['total_seguidores'] ?>
+
+							</span>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+		<div class="col-md-6">
+
+			<div class="row mb-2 tweetBox" style="height:190px;">
+				<div class="col">
+					<div class="card">
+						<div class="card-body" id="pesquisarForm">
+							<form action="quem_seguir" method="get">
+								<div class="input-group mb-3">
+									<input type="text" name="pesquisarPor" class="form-control" placeholder="Quem você está procurando?">
+									<div class="input-group-append">
+										<button class="btn btn-primary" type="submit">Procurar</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="content">
+				<div class="card card-nullmessage">
+					<div class="card-body text-center">
+						<img class="img-fluid" src="img/nullmessage2.png">
+						<h4 class="card-title ">Ache pessoas conhecidas </h5>
+						<h6 class="card-subtitle mb-2 ">Amplia sua rede e fique por dentro do que esta acontecendo ao reder do mundo</h6>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+<div class="footer" id="footer">
+	<div class="icons">
+		<div class="row justify-content-center">
+			<div class="col-2 col-md-1">
+				<a href="timeline"><i class="fas fa-home"></i></a>
+			</div>
+			<div class="col-2 col-md-1">
+				<a href="perfil"><i class="fas fa-user"></i></a>
+			</div>
+			<div class="col-2 col-md-1 disabled">
+				<a href="quem_seguir"><i class="fas fa-search"><span class="disabled-circle-search"></span></i></a>
+			</div>
+			<div class="col-2 col-md-1">
+				<a href="#sair"><i class="fas fa-sign-out-alt"></i></a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+$(document).ready(function() {
+
+	var seguindo;
+
+	/*$.ajax({
+        type: 'GET',
+        url: 'pesquisar_usuarios',
+        success: function(data) {
+            $("#content").html(data);
+        },
+        error: function() {
+            alert("Erro ao carregar a view pesquisar_usuarios.");
+        }
+    });*/
+
+    // FUNÇÕES *************************************************************************************************************
+
+    //função para recuperar usuários
+    function carregarQuemSeguir(pesquisarPor){
+
+	    $.ajax({
+            type: 'GET',
+            url: 'pesquisar_usuarios?pesquisarPor=' + pesquisarPor,
+            success: function(data) {
+                $("#content").html(data);
+            },
+            error: function() {
+                alert("Erro ao carregar a view pesquisar_usuarios.");
+        	}
+    	});
+
+    }
+
+    // FUNCIONALIDADES *************************************************************************************************************
+
+    //pesquisar usuários
+    $("body").on("submit", "#pesquisarForm form", function(e){
+    	e.preventDefault();
+    	var pesquisarPor = $("#pesquisarForm form input").val();
+        $.ajax({
+            type: 'get',
+            url: 'pesquisar_usuarios',
+            success: function(data) {
+                carregarQuemSeguir(pesquisarPor);
+            },
+            error: function() {
+                alert("Erro ao carregar a view pesquisar_usuarios.");
+            }
+        });
+    });
+
+    //deixar de seguir
+    $("body").on("click", "a#deixar_de_seguir", function(e){
+		e.preventDefault();
+
+		//recuperar número de seguindos
+		seguindo = $("#seguindo").html();
+		seguindo = parseInt(seguindo);
+
+        
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'get',
+            success: function(data) {
+            },
+            error: function() {
+                alert("Erro ao carregar a view de seguindo.");
+            }
+    	});
+
+    	//alterar número de seguindo
+    	$("#seguindo").html((seguindo - 1));
+
+    	//alterar botao deixar_de_seguir para seguir 
+        $(this).attr('href', 'acao?acao=seguir&id_usuario='+$(this).attr('value'));
+        $(this).attr('class', 'btn btn-success');
+        $(this).attr('id', 'seguir');
+        $(this).html('Seguir');
+	});
+
+    //seguir
+    $("body").on("click", "a#seguir", function(e){
+		e.preventDefault();
+
+		//recuperar número de seguindos
+		seguindo = $("#seguindo").html();
+		seguindo = parseInt(seguindo);
+
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'get',
+            success: function(data) {
+            },
+            error: function() {
+                alert("Erro ao carregar a view de seguindo.");
+            }
+    	});
+
+    	//alterar número de seguindo
+    	$("#seguindo").html((seguindo + 1));
+
+    	//alterar botao seguir para deixar_de_seguir 
+        $(this).attr('href', 'acao?acao=deixar_de_seguir&id_usuario='+$(this).attr('value'));
+        $(this).attr('class', 'btn btn-danger');
+        $(this).attr('id', 'deixar_de_seguir');
+        $(this).html('Deixar de seguir');
+	});
+
+});
+</script>

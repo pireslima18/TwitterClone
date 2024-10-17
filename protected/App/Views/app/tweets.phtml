@@ -1,0 +1,82 @@
+<div class="row mb-2" style="height:190px;">
+	<div class="col tweetBox" id="tweetForm">
+		<form action="tweet" method="post">
+			<textarea placeholder="O que está acontecendo?" maxlength="140" class="form-control" name="tweet" id="tweet" rows="3" required></textarea>
+			
+			<div class="col mt-2 d-flex justify-content-end">
+				<button type="submit" class="btn btn-primary" id="tweetar">Tweet</button>
+			</div>
+
+		</form>
+	</div>
+</div>
+
+<?php //echo"<pre>"; print_r($this->view->tweets); echo('</pre>'); ?>
+<?php //echo"<pre>"; print_r($this->view->comentarios); echo('</pre>'); ?>
+
+<?php foreach($this->view->tweets as $indice => $tweet) {?>
+	<div class="card" id="card-tweet-<?= $tweet['id']?>">
+		<div class="card-body d-flex">
+			<div>
+		    	<img src="<?= !empty($tweet['path']) ? $tweet['path']: 'fotos_usuarios/sem_foto.png'?>" class="rounded-circle me-2" width="45px" height="45px">
+		    </div>
+			<div>
+				<p class="card-title"><strong id="tweetNome<?= $tweet['id']?>"><?= $tweet['nome']?></strong> <small><span class="text text-muted">- <?= $tweet['data']?></span></small></p>
+		        <p class="card-text text-break"><?= $tweet['tweet']?></p>
+		        <p class="card-text">
+		        	<small class="text-muted">
+		        		<span class="me-3">
+		        			<?php if($tweet['curtido_sn'] == 0){?>
+			        			<a href="acao?acao=curtirTweet&id_tweet=<?=$tweet['id']?>" class="text-secondary text-decoration-none" id="curtir" value="<?=$tweet['id']?>">
+				        			<i class="far fa-heart"></i>
+			        			</a>
+		        			<?php } if($tweet['curtido_sn'] == 1){?>
+			        			<a href="acao?acao=descurtirTweet&id_tweet=<?=$tweet['id']?>" class="text-secondary text-decoration-none" id="descurtir" value="<?=$tweet['id']?>">
+				        			<i class="fas fa-heart text-danger"></i>
+			        			</a>
+		        			<?php } ?>
+		        			<span id="curtidasTweet<?=$tweet['id']?>">
+			        			<?=$tweet['curtidas']?>
+		        			</span>
+		        		</span>
+		        		<span>
+		        			<a href="recuperar_comentario?id_tweet=<?=$tweet['id']?>" class="text-secondary text-decoration-none" id="exibirCometariosTweet" value="<?= $tweet['id']?>">
+			        			<i class="far fa-comment"></i>
+		        			</a>
+		        			<span id="countComentariosTweet<?=$tweet['id']?>">
+			        			<?=$tweet['count_comentarios']?>
+		        			</span>
+		        		</span>
+  					</small>
+		        </p>
+			</div>
+		</div>
+
+		<!-- Comentários -->
+		<div class="ms-4 position-relative d-none" id="comentariosTweet<?= $tweet['id']?>">
+
+			<div id="comentarioForm">
+				<form>
+					<div class="input-group mb-3 px-3">
+						<input type="text" class="form-control" placeholder="Adicionar comentário" name="comentario" id="adicionarComentario<?= $tweet['id']?>" required style="max-width: 400px;" maxlength="140">
+						<input type="hidden" value="<?= $tweet['id']?>" name="id_tweet">
+						<button type="submit" class="btn btn-outline-primary" id="enviarComentario<?= $tweet['id']?>">enviar</button>
+					</div>
+				</form>
+			</div>
+				
+			<div id="content-comment-<?= $tweet['id']?>"></div>
+			
+		</div>
+	</div>
+<?php } if(empty($this->view->tweets)){?>
+
+	<div class="card card-nullmessage">
+		<div class="card-body text-center">
+			<img class="img-fluid" src="img/nullmessage4.png">
+			<h4 class="card-title ">Não há nada para ver aqui</h5>
+			<h6 class="card-subtitle mb-2 ">Siga novas pessoas ou poste algo interessante</h6>
+		</div>
+	</div>
+
+<?php } ?>

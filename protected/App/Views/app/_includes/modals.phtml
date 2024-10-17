@@ -1,0 +1,51 @@
+<!-- Modals -->
+
+	<div class="modal fade" id="mudarFotoModal">
+	    <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content" id="novaFoto">
+		    	<form action="novaFoto" method="post" enctype="multipart/form-data">
+					<div class="modal-header border-bottom">
+						<h5 class="modal-title">Editar foto</h5>
+						<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+						</button>
+					</div>
+
+					<div id="preview" class="d-none"></div>
+
+					<img src="<?= !empty($_SESSION['path']) ? $_SESSION['path'] : 'fotos_usuarios/sem_foto.png'?>" class="rounded-circle mx-auto d-block mt-2" id="img" width="100px" height="100px">
+					<div class="modal-body bg-white">
+						<div class="form-group">
+						    <input type="file" accept="image/*" name="arquivo" class="form-control shadow " id="arquivo" required>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary">Salvar mudança</button>
+					</div>
+				</form>
+		    </div>
+	    </div>
+	</div>
+	
+	<div class="modal fade" id="mudarNomeModal">
+	    <div class="modal-dialog modal-dialog-centered" role="document">
+		    <div class="modal-content">
+		    	<form action="alterarNome" method="post">
+					<div class="modal-header">
+						<h5 class="modal-title">Editar Nome</h5>
+						<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+						</button>
+					</div>
+					<div class="modal-body">
+					  <div class="form-group">
+					    <input type="text" name="nome" class="form-control" value="<?= $_SESSION['nome']?>">
+					  </div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary">Salvar mudança</button>
+					</div>
+				</form>
+		    </div>
+	    </div>
+	</div>

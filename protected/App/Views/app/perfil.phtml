@@ -1,0 +1,487 @@
+<nav class="navbar navbar-expand-lg menu">
+	<div class="container">
+	  <div class="navbar-nav">
+			<img src="img/twitter_logo.png" class="menuIco" />
+	  </div>
+	</div>
+</nav>
+
+<div class="mt-5">
+	
+	<div class="perfil-info">
+		
+		<div class="perfil-capa" style=""></div>
+
+		<div class="perfil-foto"><img src="<?= !empty($_SESSION['path']) ? $_SESSION['path'] : 'fotos_usuarios/sem_foto.png'?>"></div>
+
+		<div class="perfil-data">
+			
+			<div class="dados-perfil">
+				<p class="nomeUsuario">
+					<?= $_SESSION['nome']?>
+					<!-- Button trigger modal Mudar Nome -->
+					<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#mudarNomeModal">
+						<i class="fas fa-edit"></i>
+					</button>
+				</p>
+			</div>
+			
+		</div>
+
+		<!-- Button trigger modal Mudar Foto -->
+		<button type="button" class="btn btn-primary editar-perfil" data-toggle="modal" data-target="#mudarFotoModal">
+		  Editar foto
+		</button>
+
+		<?php include('_includes/modals.phtml'); ?>
+
+		<div class="perfil-tweets" style="">
+
+			<!-- Configurnado mesagens de feedback para alterações no perfil -->
+
+			<?php if(isset($_GET['uploads']) && $_GET['uploads'] == 'done'){ ?>
+				<div class="alert alert-success alert-dismissible fade show" role="alert">
+				    <strong>Maravilha!</strong> Sua foto foi alterada com sucesso.
+				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+					</button>
+				</div>
+			<?php } elseif(isset($_GET['alterarNome']) && $_GET['alterarNome'] == 'done'){?>
+				<div class="alert alert-success alert-dismissible fade show" role="alert">
+				    <strong>Maravilha!</strong> Seu nome foi alterado com sucesso.
+				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+					</button>
+				</div>
+			<?php }
+				if(isset($_GET['erro'])){
+					if( $_GET['erro'] == 'format'){
+			?>
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				    <strong>Ops, não foi possivel alterar a foto!</strong> Formato de arquivo não aceito!
+				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+					</button>
+				</div>
+			<?php }elseif( $_GET['erro'] == 'size'){ ?>
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				    <strong>Ops, não foi possivel alterar a foto!</strong> Este arquivo é muito grande!
+				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+					</button>
+				</div>
+			<?php }elseif( $_GET['erro'] == 'nome'){ ?>
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				    <strong>Ops, não foi possivel alterar o nome!</strong> Tente outro!
+				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+					</button>
+				</div>
+			<?php }else{ ?>
+				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				    <strong>Ops, não foi possivel alterar a foto!</strong> Tente novamente mais tarde!
+				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+					</button>
+				</div>
+			<?php }} ?>
+
+			<!-- Carregar informações da página (tweets, seguindo e seguidores) -->
+			<div id="content">
+				
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<div class="footer" id="footer">
+		<div class="icons">
+			<div class="row justify-content-center">
+				<div class="col-2 col-md-1">
+					<a href="timeline" id="timeline"><i class="fas fa-home"></i></a>
+				</div>
+				<div class="col-2 col-md-1 disabled">
+					<a href="perfil"><i class="fas fa-user"><span class="disabled-circle-profile"></span></i></a>
+				</div>
+				<div class="col-2 col-md-1">
+					<a href="quem_seguir" id="quem_seguir"><i class="fas fa-search"></i></a>
+				</div>
+				<div class="col-2 col-md-1">
+					<a href="#footer"><i class="fas fa-sign-out-alt"></i></a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script>
+$(document).ready(function() {
+
+	var tweets;
+	var seguindo;
+	var curtidas;
+	var comentarios;
+
+	//carregar tweets
+	$.ajax({
+        type: 'GET',
+        url: 'perfilTweets',
+        success: function(data) {
+            $("#content").html(data);
+        },
+        error: function() {
+            alert("Erro ao carregar a view seguindo.");
+        }
+    });
+
+    // FUNÇÕES *************************************************************************************************************
+    function carregarTweetsPerfil(){
+		$.ajax({
+            type: 'GET',
+            url: 'perfilTweets',
+            success: function(data) {
+                $("#content").html(data);
+            },
+            error: function() {
+                alert("Erro ao carregar a view seguindo.");
+            }
+        });
+	}
+
+    //função para recuperar comentários
+	function recuperarComentários(id_tweet){
+		$.ajax({
+	        type: 'GET',
+	        url: 'recuperar_comentario?id_tweet=' + id_tweet,
+	        success: function(data) {
+	            $("#content-comment-" + id_tweet).html(data);
+	        },
+	        error: function() {
+	            alert("Erro ao carregar a view tweets.");
+	        }
+	    });
+	}
+
+	function carregarSeguindoPerfil(){
+		$.ajax({
+            type: 'GET',
+            url: 'perfilSeguindo',
+            success: function(data) {
+                $("#content").html(data);
+            },
+            error: function() {
+                alert("Erro ao carregar a view seguindo.");
+            }
+        });
+	}
+
+	function carregarSeguidoresPerfil(){
+		$.ajax({
+            type: 'GET',
+            url: 'perfilSeguidores',
+            success: function(data) {
+                $("#content").html(data);
+            },
+            error: function() {
+                alert("Erro ao carregar a view de seguidores.");
+            }
+        });
+	}
+
+    // Carregar views *************************************************************************************************************
+	//recuperar tweets
+    $("#content").on("click", "#tweets", function(){
+        carregarTweetsPerfil();
+    });
+
+    $("#content").on("click", "#seguindo", function(){
+        carregarSeguindoPerfil();
+    });
+
+    $("#content").on("click", "#seguidores", function(){
+        carregarSeguidoresPerfil();
+    });
+
+    // FUNCIONALIDADES *************************************************************************************************************
+
+    //remover tweet
+    $("#content").on("click", "a#removerTweet", function(e){
+        e.preventDefault();
+
+        tweets = $("#tweets").html();
+		tweets = tweets.replace('Seguindo', '');
+		tweets = parseInt(tweets);
+
+        //remover display tweet 
+        $("#card-tweet-"+$(this).attr('value')).addClass('d-none');
+
+    	//alterar número de tweets
+    	$("#tweets").html((tweets - 1)+' Tweets');
+
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'get',
+            success: function(data) {
+                //carregarTweetsPerfil();
+            },
+            error: function() {
+                alert("Erro ao carregar a view de seguidores.");
+            }
+    	});
+
+    });
+
+    //deixar de seguir
+    $("#content").on("click", "a#deixar_de_seguir", function(e){
+		e.preventDefault();
+
+		seguindo = $("#seguindo").html();
+		seguindo = seguindo.replace('Seguindo', '');
+		seguindo = parseInt(seguindo);
+
+        //alert($(this).attr('value'));
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'get',
+            success: function(data) {
+            },
+            error: function() {
+                alert("Erro ao carregar a view de seguindo.");
+            }
+    	});
+
+    	//alterar número de seguindo
+    	$("#seguindo").html((seguindo - 1)+' Seguindo');
+
+    	//alterar botao deixar_de_seguir para seguir 
+        $(this).attr('href', 'acao?acao=seguir&id_usuario='+$(this).attr('value') +'&pagina=recuperarSeguindo');
+        $(this).attr('class', 'btn btn-success');
+        $(this).attr('id', 'seguir');
+        $(this).html('Seguir');
+	});
+
+    //seguir
+    $("#content").on("click", "a#seguir", function(e){
+		e.preventDefault();
+
+		seguindo = $("#seguindo").html();
+		seguindo = seguindo.replace('Seguindo', '');
+		seguindo = parseInt(seguindo);
+
+        //alert($(this).attr('value'));
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'get',
+            success: function(data) {
+            },
+            error: function() {
+                alert("Erro ao carregar a view de seguindo.");
+            }
+    	});
+
+    	//alterar número de seguindo
+    	$("#seguindo").html((seguindo + 1)+' Seguindo');
+
+    	//alterar botao seguir para deixar_de_seguir 
+        $(this).attr('href', 'acao?acao=deixar_de_seguir&id_usuario='+$(this).attr('value') +'&pagina=recuperarSeguindo');
+        $(this).attr('class', 'btn btn-danger');
+        $(this).attr('id', 'deixar_de_seguir');
+        $(this).html('Deixar de seguir');
+	});
+
+	//curtir tweet
+    $("#content").on("click", "#curtir", function(e){
+		e.preventDefault();
+
+		//recuperar número de curtidas
+		curtidas = $("#curtidasTweet" + $(this).attr('value')).html();
+		curtidas = parseInt(curtidas);
+
+		$.ajax({
+            type: 'get',
+            url: $(this).attr('href'),
+            success: function(data) {
+        		//carregarTweetsTimeline();
+            },
+            error: function() {
+                alert("Erro ao carregar a view pesquisar.");
+            }
+        });
+
+        //alterar número de curtidas
+    	$("#curtidasTweet" + $(this).attr('value')).html((curtidas + 1));
+
+    	//alterar botao curtir para descurtir 
+        $(this).attr('href', 'acao?acao=descurtirTweet&id_tweet='+$(this).attr('value'));
+        $(this).find('i').attr('class', 'fas fa-heart text-danger');
+        $(this).attr('id', 'descurtir');
+
+    });
+
+    //descurtir tweet
+    $("#content").on("click", "#descurtir", function(e){
+		e.preventDefault();
+
+		//recuperar número de curtidas
+		curtidas = $("#curtidasTweet" + $(this).attr('value')).html();
+		curtidas = parseInt(curtidas);
+
+		$.ajax({
+            type: 'get',
+            url: $(this).attr('href'),
+            success: function(data) {
+        		//carregarTweetsTimeline();
+            },
+            error: function() {
+                alert("Erro ao carregar a view pesquisar.");
+            }
+        });
+
+        //alterar número de curtidas
+    	($("#curtidasTweet" + $(this).attr('value')).html((curtidas - 1)));
+
+    	//alterar botao curtir para descurtir 
+        $(this).attr('href', 'acao?acao=curtirTweet&id_tweet='+$(this).attr('value'));
+        $(this).find('i').attr('class', 'far fa-heart');
+        $(this).attr('id', 'curtir');
+
+    });
+
+    //exibir-ou-deixar de exibir comentário 
+	$("body").on("click", "#exibirCometariosTweet", function(e){
+		e.preventDefault();
+
+		var id_tweet = $(this).attr('value');
+
+		//recuperar comentários
+		recuperarComentários(id_tweet);
+
+		$("#comentariosTweet" + id_tweet).toggleClass('d-none');
+
+    });
+
+    //adicionar comentário
+	$("body").on("submit", "#comentarioForm form", function(e){
+		e.preventDefault();
+
+		id_tweet = $(this).find('input[name="id_tweet"]').attr("value");
+
+		//recuperar número de comentários
+		comentarios = $("#countComentariosTweet" + id_tweet).html();
+		comentarios = parseInt(comentarios);
+
+		
+		//desativar botão de comentar
+		$(this).find('button').addClass("disabled");
+
+		$.ajax({
+	        type: 'POST',
+	        url: 'comentario',
+	        data: $(this).serialize(),
+	        dataType: 'json',
+	        success: function(data) {
+	            recuperarComentários(id_tweet);
+	        },
+	        error: function() {
+	            alert("Erro ao carregar a view tweets.");
+	        }
+	    }).done(function(){
+	    	//limpar input de comentário
+	    	$('#adicionarComentario' + id_tweet).val("");
+	    	//ativar botão de comentar
+	    	$('#enviarComentario' + id_tweet).removeClass("disabled");
+	    });
+
+        //alterar número de comentários
+    	$("#countComentariosTweet" + id_tweet).html(comentarios + 1);
+		
+    });
+
+	//excluir comentário
+	$("body").on("click", "#removerComentario", function(e){
+		e.preventDefault();
+
+		id_tweet = $(this).attr("name");
+
+		//recuperar número de comentários
+		comentarios = $("#countComentariosTweet" + id_tweet).html();
+		comentarios = parseInt(comentarios);
+
+		$.ajax({
+	        type: 'GET',
+	        url: $(this).attr('href'),
+	        success: function(data) {
+	        },
+	        error: function() {
+	            alert("Erro ao carregar a view tweets.");
+	        }
+	    });
+
+	    //alterar número de comentários
+    	$("#countComentariosTweet" + id_tweet).html(comentarios - 1);
+
+    	//remover display do comentário excluido
+	    $("#container-comentario" + $(this).attr("value")).addClass("d-none");
+		
+    });
+
+	//curtir comentário
+	$("#content").on("click", "#curtirComentario", function(e){
+		e.preventDefault();
+
+		id_tweet = $(this).attr("value");
+
+		//recuperar número de curtidas
+		curtidas = $("#curtidasComentario" + id_tweet).html();
+		curtidas = parseInt(curtidas);
+
+		$.ajax({
+            type: 'get',
+            url: $(this).attr('href'),
+            success: function(data) {
+            },
+            error: function() {
+                alert("Erro ao carregar a view.");
+            }
+        });
+
+        //alterar número de curtidas
+    	$("#curtidasComentario" + id_tweet).html((curtidas + 1));
+
+    	//alterar botao curtir para descurtir 
+        $(this).attr('href', 'acao?acao=descurtirComentario&id_comentario='+id_tweet);
+        $(this).find('i').attr('class', 'fas fa-heart text-danger');
+        $(this).attr('id', 'descurtirComentario');
+		
+    });
+
+
+    //descurtir comentario
+    $("#content").on("click", "#descurtirComentario", function(e){
+		e.preventDefault();
+
+		id_tweet = $(this).attr("value");
+
+		//recuperar número de curtidas
+		curtidas = $("#curtidasComentario" + id_tweet).html();
+		curtidas = parseInt(curtidas);
+
+		$.ajax({
+            type: 'get',
+            url: $(this).attr('href'),
+            success: function(data) {
+            },
+            error: function() {
+                alert("Erro ao carregar a view pesquisar.");
+            }
+        });
+
+        //alterar número de curtidas
+    	($("#curtidasComentario" + id_tweet).html((curtidas - 1)));
+
+    	//alterar botao curtir para descurtir
+        $(this).attr('href', 'acao?acao=curtirComentario&id_comentario='+id_tweet);
+        $(this).find('i').attr('class', 'far fa-heart');
+        $(this).attr('id', 'curtirComentario');
+
+    });
+
+});
+</script>
