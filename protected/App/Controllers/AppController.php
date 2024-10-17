@@ -547,7 +547,7 @@
 
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '' /*|| !isset($_SESSION['nome']) || $_SESSION['nome'] == ''*/) {
 				
-				header('location: /projeto/projeto_8/?login=erro');
+				header('location: /git_clone/TwitterClone/public/?login=erro');
 
 			}
 

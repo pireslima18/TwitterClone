@@ -36,7 +36,7 @@
 						
 						$usuario->salvar();
 	
-						echo json_encode(array('success' => true, 'redirect' => '/projeto/projeto_8/?cadastro=success'));
+						echo json_encode(array('success' => true, 'redirect' => '/git_clone/TwitterClone/public/?cadastro=success'));
 				}else{
 
 					echo json_encode(array('success' => false, 'message' => 'Usuário já cadastrado'));

@@ -34,7 +34,7 @@
 		public function sair(){
 			session_start();
 			session_destroy();
-			header('location:/projeto/projeto_8/');
+			header('location:/git_clone/TwitterClone/public/');
 		}
 
 	}
