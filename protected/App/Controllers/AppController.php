@@ -214,7 +214,7 @@
 			$this->view->tweets = $tweets;
 			
 			//$this->render('perfilTweets');
-			require_once('../../../../twitter_clone/App/Views/app/perfilTweets.phtml');
+			require_once('../protected/App/Views/app/perfilTweets.phtml');
 		}
 
 		public function perfilSeguidores(){
@@ -237,7 +237,7 @@
 			$this->view->usuarios = $usuarios;
 
 			//$this->render('perfilSeguidores');
-			require_once('../../../../twitter_clone/App/Views/app/perfilSeguidores.phtml');
+			require_once('../protected/App/Views/app/perfilSeguidores.phtml');
 
 		}
 
@@ -262,7 +262,7 @@
 			$this->view->usuarios = $usuarios;
 
 			//$this->render('perfilSeguindo');
-			require_once('../../../../twitter_clone/App/Views/app/perfilSeguindo.phtml');
+			require_once('../protected/App/Views/app/perfilSeguindo.phtml');
 
 		}
 

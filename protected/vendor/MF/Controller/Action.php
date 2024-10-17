@@ -13,8 +13,8 @@
 		protected function render($view, $layout = 'layout'){
 			$this->view->page = $view;
 
-			if (file_exists("../../../../twitter_clone/App/Views/".$layout.".phtml")) {
-				require_once "../../../../twitter_clone/App/Views/".$layout.".phtml";
+			if (file_exists("../protected/App/Views/".$layout.".phtml")) {
+				require_once "../protected/App/Views/".$layout.".phtml";
 			}else{
 				$this->content();
 			}
@@ -24,7 +24,7 @@
 			$classAtual = get_class($this);
 			$classAtual = str_replace('App\\Controllers\\', '', $classAtual);
 			$classAtual = strtolower(str_replace('Controller', '', $classAtual));
-			require_once "../../../../twitter_clone/App/Views/".$classAtual."/".$this->view->page.".phtml";
+			require_once "../protected/App/Views/".$classAtual."/".$this->view->page.".phtml";
 		}
 	}
 

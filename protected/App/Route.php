@@ -9,107 +9,107 @@
 		public function initRoutes(){
 
 			$routes['home'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/',
+				'route' => '/git_clone/TwitterClone/public/',
 				'controller' => 'indexController',
 				'action' => 'index'
 			);
 			$routes['inscreverse'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/inscreverse',
+				'route' => '/git_clone/TwitterClone/public/inscreverse',
 				'controller' => 'indexController',
 				'action' => 'inscreverse'
 			);
 			$routes['registrar'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/registrar',
+				'route' => '/git_clone/TwitterClone/public/registrar',
 				'controller' => 'indexController',
 				'action' => 'registrar'
 			);
 			$routes['autenticar'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/autenticar',
+				'route' => '/git_clone/TwitterClone/public/autenticar',
 				'controller' => 'AuthController',
 				'action' => 'autenticar'
 			);
 			$routes['sair'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/sair',
+				'route' => '/git_clone/TwitterClone/public/sair',
 				'controller' => 'AuthController',
 				'action' => 'sair'
 			);
 			$routes['timeline'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/timeline',
+				'route' => '/git_clone/TwitterClone/public/timeline',
 				'controller' => 'AppController',
 				'action' => 'timeline'
 			);
 			$routes['tweets'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/tweets',
+				'route' => '/git_clone/TwitterClone/public/tweets',
 				'controller' => 'AppController',
 				'action' => 'tweets'
 			);
 			$routes['tweet'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/tweet',
+				'route' => '/git_clone/TwitterClone/public/tweet',
 				'controller' => 'AppController',
 				'action' => 'tweet'
 			);
 			$routes['recuperar_comentario'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/recuperar_comentario',
+				'route' => '/git_clone/TwitterClone/public/recuperar_comentario',
 				'controller' => 'AppController',
 				'action' => 'recuperarComentario'
 			);
 			$routes['comentario'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/comentario',
+				'route' => '/git_clone/TwitterClone/public/comentario',
 				'controller' => 'AppController',
 				'action' => 'comentario'
 			);
 			$routes['remover_tweet'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/remover_tweet',
+				'route' => '/git_clone/TwitterClone/public/remover_tweet',
 				'controller' => 'AppController',
 				'action' => 'removerTweet'
 			);
 			$routes['remover_comentario'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/remover_comentario',
+				'route' => '/git_clone/TwitterClone/public/remover_comentario',
 				'controller' => 'AppController',
 				'action' => 'removerComentario'
 			);
 			$routes['quem_seguir'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/quem_seguir',
+				'route' => '/git_clone/TwitterClone/public/quem_seguir',
 				'controller' => 'AppController',
 				'action' => 'quemSeguir'
 			);
 			$routes['pesquisar_usuarios'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/pesquisar_usuarios',
+				'route' => '/git_clone/TwitterClone/public/pesquisar_usuarios',
 				'controller' => 'AppController',
 				'action' => 'pesquisarUsuarios'
 			);
 			$routes['perfil'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/perfil',
+				'route' => '/git_clone/TwitterClone/public/perfil',
 				'controller' => 'AppController',
 				'action' => 'perfil'
 			);
 			$routes['perfilTweets'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/perfilTweets',
+				'route' => '/git_clone/TwitterClone/public/perfilTweets',
 				'controller' => 'AppController',
 				'action' => 'perfilTweets'
 			);
 			$routes['perfilSeguidores'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/perfilSeguidores',
+				'route' => '/git_clone/TwitterClone/public/perfilSeguidores',
 				'controller' => 'AppController',
 				'action' => 'perfilSeguidores'
 			);
 			$routes['perfilSeguindo'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/perfilSeguindo',
+				'route' => '/git_clone/TwitterClone/public/perfilSeguindo',
 				'controller' => 'AppController',
 				'action' => 'perfilSeguindo'
 			);
 			$routes['novaFoto'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/novaFoto',
+				'route' => '/git_clone/TwitterClone/public/novaFoto',
 				'controller' => 'AppController',
 				'action' => 'novaFoto'
 			);
 			$routes['alterarNome'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/alterarNome',
+				'route' => '/git_clone/TwitterClone/public/alterarNome',
 				'controller' => 'AppController',
 				'action' => 'alterarNome'
 			);
 			$routes['acao'] = array(
-				'route' => '/site_suamelhorface/projeto/projeto_8/acao',
+				'route' => '/git_clone/TwitterClone/public/acao',
 				'controller' => 'AppController',
 				'action' => 'acao'
 			);
