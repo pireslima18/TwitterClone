@@ -10,22 +10,23 @@
 
 		public function autenticar(){
 
-			$usuario = Container::getModel('Usuario');
+			if(!empty($_POST['senha']) && !empty($_POST['email'])){
+				$usuario = Container::getModel('Usuario');
+				$usuario->__set('email', $_POST['email']);
+				$usuario->__set('senha', md5($_POST['senha']));
 
-			$usuario->__set('email', $_POST['email']);
-			$usuario->__set('senha', md5($_POST['senha']));
+				$usuario->autenticar();
 
-			$usuario->autenticar();
+				if ($usuario->__get('id') != '' && $usuario->__get('nome') != '' ) {
 
-			if ($usuario->__get('id') != '' && $usuario->__get('nome') != '' ) {
-
-				session_start();
-				$_SESSION['id'] = $usuario->__get('id');
-				//$_SESSION['nome'] = $usuario->__get('nome');
-				header('Location: timeline');
-
+					session_start();
+					$_SESSION['id'] = $usuario->__get('id');
+					echo json_encode(array('success' => true, 'redirect' => 'timeline'));
+				}else{
+					echo json_encode(array('success' => false, 'message' => 'Usuário ou senha inválidos'));
+				}
 			}else{
-				header('Location: /site_suamelhorface/projeto/projeto_8/?login=erro');
+				echo json_encode(array('success' => false, 'message' => 'Preencha os campos necessários'));
 			}
 
 		}
@@ -33,7 +34,7 @@
 		public function sair(){
 			session_start();
 			session_destroy();
-			header('location:/site_suamelhorface/projeto/projeto_8/');
+			header('location:/projeto/projeto_8/');
 		}
 
 	}

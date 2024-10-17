@@ -7,10 +7,10 @@
 			<div class="rounded-circle position-absolute" style="height: 8px; width: 8px; background: #ccc; top: 35px;left: 0px;"></div>
 			
 			<div>
-		    	<img src="<?= !empty($comentario['path']) ? $comentario['path']: 'fotos_usuarios/sem_foto.png'?>" class="rounded-circle me-2" width="45px" height="45px">
+		    	<img src="<?= !empty($comentario['path']) ? $comentario['path']: 'fotos_usuarios/sem_foto.png'?>" class="rounded-circle me-2" width="45px" height="45px" id="<?= $comentario['id_usuario'] == $_SESSION['id'] ? '' : 'usuario';?>" value="<?= $comentario['id_usuario']?>">
 		    </div>
 			<div>
-				<p><strong><?= $comentario['nome']?></strong> <small><span class="text text-muted">- <?= $comentario['data']?></span></small><?php if($comentario['id_usuario'] == $_SESSION['id']){?><a href="remover_comentario?id_comentario=<?= $comentario['id']?>" class="botao-tweet" id="removerComentario" value="<?=$comentario['id']?>" name="<?= $comentario['id_tweet'] ?>"><i class="far fa-trash-alt" class="text-danger"></i></a><?php }?></p>
+				<p><strong id="<?= $comentario['id_usuario'] == $_SESSION['id'] ? '' : 'usuario';?>" value="<?= $comentario['id_usuario']?>"><?= $comentario['nome']?></strong> <small><span class="text text-muted">- <?= $comentario['data']?></span></small><?php if($comentario['id_usuario'] == $_SESSION['id']){?><a href="remover_comentario?id_comentario=<?= $comentario['id']?>" class="botao-tweet" id="removerComentario" value="<?=$comentario['id']?>" name="<?= $comentario['id_tweet'] ?>"><i class="far fa-trash-alt" class="text-danger"></i></a><?php }?></p>
 		        <p class="card-text text-break"><?= $comentario['comentario']?></p>
 		        <p class="card-text">
 		        	<small class="text-muted">
@@ -35,11 +35,11 @@
 	</div>
 <?php } if(empty($this->view->comentarios)){?>
 
-	<div class="card card-nullmessage" style="max-width: 400px;">
+	<div class="card card-nullmessage border-0" style="max-width: 400px;">
 		<div class="card-body text-center">
 			<img class="img-fluid" src="img/nullmessage2.png">
-			<h4 class="card-title ">Ainda não há comentários</h5>
-			<h6 class="card-subtitle mb-2 ">Seja o primeiro a comentar</h6>
+			<h4 class="card-title text-muted">Ainda não há comentários</h5>
+			<h6 class="card-subtitle mb-2 text-muted">Seja o primeiro a comentar</h6>
 		</div>
 	</div>
 

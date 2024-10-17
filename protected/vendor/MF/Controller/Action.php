@@ -13,18 +13,23 @@
 		protected function render($view, $layout = 'layout'){
 			$this->view->page = $view;
 
-			if (file_exists("../protected/App/Views/".$layout.".phtml")) {
-				require_once "../protected/App/Views/".$layout.".phtml";
+			if (file_exists("../../../arquivos_sigilosos/app_twitter_clone/App/Views/".$layout.".phtml")) {
+				require_once "../../../arquivos_sigilosos/app_twitter_clone/App/Views/".$layout.".phtml";
 			}else{
 				$this->content();
 			}
+		}
+		
+		protected function require($view){
+			$this->view->page = $view;
+			$this->content();
 		}
 
 		protected function content(){
 			$classAtual = get_class($this);
 			$classAtual = str_replace('App\\Controllers\\', '', $classAtual);
 			$classAtual = strtolower(str_replace('Controller', '', $classAtual));
-			require_once "../protected/App/Views/".$classAtual."/".$this->view->page.".phtml";
+			require_once "../../../arquivos_sigilosos/app_twitter_clone/App/Views/".$classAtual."/".$this->view->page.".phtml";
 		}
 	}
 

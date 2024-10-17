@@ -7,6 +7,7 @@
 	class Usuario extends Model{
 
 		private $id;
+		private $id_usuario_procurado;
 		private $nome;
 		private $email;
 		private $senha;
@@ -39,9 +40,6 @@
 			if (strlen($this->__get('nome')) < 3) {
 				$valido = false;
 			}
-			if (strlen($this->__get('email')) < 3) {
-				$valido = false;
-			}
 			if (strlen($this->__get('senha')) < 3) {
 				$valido = false;
 			}
@@ -70,7 +68,7 @@
 
 			$usuario = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-			if ($usuario['id'] != '' && $usuario['nome'] != '') {
+			if (!empty($usuario['id']) && !empty($usuario['nome'])) {
 				$this->__set('id', $usuario['id']);
 				$this->__set('nome', $usuario['nome']);
 			}
@@ -322,6 +320,99 @@
 			$stmt->execute();
 
 			return $stmt->fetch(\PDO::FETCH_ASSOC);
+		}
+
+
+		public function getUsuariosSeguidoresUsuario(){
+			//Recuperar usuários que te seguem
+			$query = "
+			SELECT
+				u.id,
+				u.nome,
+				(
+					SELECT
+						count(*)
+					from
+						usuarios_seguidores as us
+					where
+						us.id_usuario = :id_usuario and us.id_usuario_seguindo = u.id
+				) as seguindo_sn,
+				(
+					SELECT
+						count(*)
+					from
+						usuarios_seguidores as us
+					where
+						us.id_usuario = :id_usuario_procurado and us.id_usuario_seguindo = u.id
+				) as usuario_seguindo_sn,
+				(
+					SELECT
+						count(*)
+					from
+						usuarios_seguidores as us
+					where
+						us.id_usuario = u.id and us.id_usuario_seguindo = :id_usuario_procurado
+				) as seguidor_sn,
+				(
+					SELECT
+						uf.path
+					FROM
+						usuarios_foto as uf
+					WHERE
+						id_usuario = u.id
+				) as path
+			FROM
+				usuarios as u
+			;";
+			$stmt = $this->db->prepare($query);
+			$stmt->bindValue(':id_usuario', $this->__get('id'));
+			$stmt->bindValue(':id_usuario_procurado', $this->__get('id_usuario_procurado'));
+			$stmt->execute();
+
+			return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+		}
+
+		public function getUsuariosSeguindoUsuario(){
+			//Recuperar usuários que te seguem
+			$query = "
+			SELECT
+				u.id,
+				u.nome,
+				(
+					SELECT
+						count(*)
+					from
+						usuarios_seguidores as us
+					where
+						us.id_usuario = :id_usuario and us.id_usuario_seguindo = u.id
+				) as seguindo_sn,
+				(
+					SELECT
+						count(*)
+					from
+						usuarios_seguidores as us
+					where
+						us.id_usuario = :id_usuario_procurado and us.id_usuario_seguindo = u.id
+				) as usuario_seguindo_sn,
+				(
+					SELECT
+						uf.path
+					FROM
+						usuarios_foto as uf
+					WHERE
+						id_usuario = u.id
+				) as path
+			FROM
+				usuarios as u
+			;";
+			$stmt = $this->db->prepare($query);
+			$stmt->bindValue(':id_usuario', $this->__get('id'));
+			$stmt->bindValue(':id_usuario_procurado', $this->__get('id_usuario_procurado'));
+			$stmt->execute();
+
+			return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
 		}
 
 	}

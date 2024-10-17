@@ -10,7 +10,7 @@
 	
 	<div class="perfil-info">
 		
-		<div class="perfil-capa" style=""></div>
+		<div class="perfil-capa"></div>
 
 		<div class="perfil-foto"><img src="<?= !empty($_SESSION['path']) ? $_SESSION['path'] : 'fotos_usuarios/sem_foto.png'?>"></div>
 
@@ -19,66 +19,16 @@
 			<div class="dados-perfil">
 				<p class="nomeUsuario">
 					<?= $_SESSION['nome']?>
-					<!-- Button trigger modal Mudar Nome -->
-					<button type="button" class="btn btn-sm" data-toggle="modal" data-target="#mudarNomeModal">
-						<i class="fas fa-edit"></i>
-					</button>
 				</p>
 			</div>
 			
 		</div>
-
-		<!-- Button trigger modal Mudar Foto -->
-		<button type="button" class="btn btn-primary editar-perfil" data-toggle="modal" data-target="#mudarFotoModal">
-		  Editar foto
-		</button>
+		
+		<button type="button" class="btn btn-outline-primary rounded-pill editar-perfil" data-bs-toggle="modal" data-bs-target="#exampleModal">Editar perfil</button>
 
 		<?php include('_includes/modals.phtml'); ?>
 
 		<div class="perfil-tweets" style="">
-
-			<!-- Configurnado mesagens de feedback para alterações no perfil -->
-
-			<?php if(isset($_GET['uploads']) && $_GET['uploads'] == 'done'){ ?>
-				<div class="alert alert-success alert-dismissible fade show" role="alert">
-				    <strong>Maravilha!</strong> Sua foto foi alterada com sucesso.
-				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-					</button>
-				</div>
-			<?php } elseif(isset($_GET['alterarNome']) && $_GET['alterarNome'] == 'done'){?>
-				<div class="alert alert-success alert-dismissible fade show" role="alert">
-				    <strong>Maravilha!</strong> Seu nome foi alterado com sucesso.
-				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-					</button>
-				</div>
-			<?php }
-				if(isset($_GET['erro'])){
-					if( $_GET['erro'] == 'format'){
-			?>
-				<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				    <strong>Ops, não foi possivel alterar a foto!</strong> Formato de arquivo não aceito!
-				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-					</button>
-				</div>
-			<?php }elseif( $_GET['erro'] == 'size'){ ?>
-				<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				    <strong>Ops, não foi possivel alterar a foto!</strong> Este arquivo é muito grande!
-				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-					</button>
-				</div>
-			<?php }elseif( $_GET['erro'] == 'nome'){ ?>
-				<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				    <strong>Ops, não foi possivel alterar o nome!</strong> Tente outro!
-				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-					</button>
-				</div>
-			<?php }else{ ?>
-				<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				    <strong>Ops, não foi possivel alterar a foto!</strong> Tente novamente mais tarde!
-				    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
-					</button>
-				</div>
-			<?php }} ?>
 
 			<!-- Carregar informações da página (tweets, seguindo e seguidores) -->
 			<div id="content">
@@ -201,6 +151,11 @@ $(document).ready(function() {
 
     // FUNCIONALIDADES *************************************************************************************************************
 
+    //carregar perfil usuario
+	$("body").on("click", "#usuario", function(){
+		window.location.assign("usuarioPerfil?usuario=" + $(this).attr('value'));
+	});
+
     //remover tweet
     $("#content").on("click", "a#removerTweet", function(e){
         e.preventDefault();
@@ -252,7 +207,7 @@ $(document).ready(function() {
 
     	//alterar botao deixar_de_seguir para seguir 
         $(this).attr('href', 'acao?acao=seguir&id_usuario='+$(this).attr('value') +'&pagina=recuperarSeguindo');
-        $(this).attr('class', 'btn btn-success');
+        $(this).attr('class', 'btn btn-outline-primary rounded-pill');
         $(this).attr('id', 'seguir');
         $(this).html('Seguir');
 	});
@@ -281,9 +236,9 @@ $(document).ready(function() {
 
     	//alterar botao seguir para deixar_de_seguir 
         $(this).attr('href', 'acao?acao=deixar_de_seguir&id_usuario='+$(this).attr('value') +'&pagina=recuperarSeguindo');
-        $(this).attr('class', 'btn btn-danger');
+        $(this).attr('class', 'btn btn-primary rounded-pill');
         $(this).attr('id', 'deixar_de_seguir');
-        $(this).html('Deixar de seguir');
+        $(this).html('Seguindo');
 	});
 
 	//curtir tweet

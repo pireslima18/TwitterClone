@@ -8,6 +8,7 @@
 
 		private $id;
 		private $id_usuario;
+		private $id_usuario_procurado;
 		private $tweet;
 		private $data;
 
@@ -31,8 +32,8 @@
 
 		}
 
-		//recuperar somente os do usuário
-		public function getTweetsUsuario(){
+		//recuperar somente os do usuário logado
+		public function getTweetsPerfil(){
 
 			$query = "
 			SELECT 
@@ -80,6 +81,61 @@
 
 			$stmt = $this->db->prepare($query);
 			$stmt->bindValue(':id_usuario', $this->__get('id_usuario'));
+			$stmt->execute();
+			return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+		}
+
+		//recuperar somente os do usuário procurado
+		public function getTweetsUsuario(){
+
+			$query = "
+			SELECT 
+				t.id,
+				t.id_usuario,
+				t.tweet,
+				DATE_FORMAT(t.data, '%d/%m/%Y %H:%i')as data,
+				u.nome,
+                f.path,
+                (
+					select
+						count(*)
+					from
+						tweets_curtidas as tc
+					where
+						tc.id_tweet = t.id
+				) as curtidas,
+                (
+					select
+						count(*)
+					from
+						tweets_curtidas as tc
+					where
+						tc.id_usuario = :id_usuario
+					AND
+						tc.id_tweet = t.id
+				) as curtido_sn,
+				(
+					select
+						count(*)
+					from
+						tweets_comentarios as tcm
+					where
+						t.id = tcm.id_tweet
+				) as count_comentarios
+			FROM 
+				tweets as t
+				left join usuarios as u on(t.id_usuario = u.id)
+				left join usuarios_foto as f on(t.id_usuario = f.id_usuario)
+			WHERE
+				t.id_usuario = :id_usuario_procurado
+			ORDER BY
+				t.data desc
+			;";
+
+			$stmt = $this->db->prepare($query);
+			$stmt->bindValue(':id_usuario', $this->__get('id_usuario'));
+			$stmt->bindValue(':id_usuario_procurado', $this->__get('id_usuario_procurado'));
 			$stmt->execute();
 			return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 

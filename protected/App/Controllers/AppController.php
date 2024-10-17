@@ -12,7 +12,7 @@
 
 			$this->validaAutenticacao();
 
-			$_SESSION['path'] = $this->recuperarFoto();
+			//$_SESSION['path'] = $this->recuperarFoto($_SESSION['id']);
 
 			//recuperar dados do usuário
 			$usuario = Container::getModel('Usuario');
@@ -38,7 +38,8 @@
 
 			$this->view->tweets = $tweets;
 
-			$this->render('tweets');
+			//$this->render('tweets');
+			$this->require('tweets');
 		}
 
 		public function tweet(){
@@ -47,7 +48,8 @@
 			
 			$tweet = Container::getModel('Tweet');
 
-			$tweet->__set('tweet', $_POST['tweet']);
+            $tweetText = filter_var($_POST['tweet'], FILTER_SANITIZE_STRING);
+			$tweet->__set('tweet', $tweetText);
 			$tweet->__set('id_usuario', $_SESSION['id']);
 
 			$tweet->salvar();
@@ -71,8 +73,8 @@
 
 			$this->view->comentarios = $comentarios;
 
-			$this->render('comentarios');
-
+			//$this->render('comentarios');
+			$this->require('comentarios');
 		}
 
 		public function comentario(){
@@ -136,7 +138,7 @@
 
 			$this->validaAutenticacao();
 
-			$_SESSION['path'] = $this->recuperarFoto();
+			//$_SESSION['path'] = $this->recuperarFoto($_SESSION['id']);
 
 			//recuperar informações do usuário
 			$usuario = Container::getModel('Usuario');
@@ -178,7 +180,7 @@
 			$this->validaAutenticacao();
 
 			//definir path da foto do usuário
-			$_SESSION['path'] = $this->recuperarFoto();
+			$_SESSION['path'] = $this->recuperarFoto($_SESSION['id']);
 			
 			//recuperar informações do usuário
 			$usuario = Container::getModel('Usuario');
@@ -209,12 +211,12 @@
 			//recuperação dos tweets
 			$tweet = Container::getModel('Tweet');
 			$tweet->__set('id_usuario', $_SESSION['id']);
-			$tweets = $tweet->getTweetsUsuario();
+			$tweets = $tweet->getTweetsPerfil();
 
 			$this->view->tweets = $tweets;
 			
 			//$this->render('perfilTweets');
-			require_once('../protected/App/Views/app/perfilTweets.phtml');
+			$this->require('perfilTweets');
 		}
 
 		public function perfilSeguidores(){
@@ -237,7 +239,7 @@
 			$this->view->usuarios = $usuarios;
 
 			//$this->render('perfilSeguidores');
-			require_once('../protected/App/Views/app/perfilSeguidores.phtml');
+			$this->require('perfilSeguidores');
 
 		}
 
@@ -262,112 +264,214 @@
 			$this->view->usuarios = $usuarios;
 
 			//$this->render('perfilSeguindo');
-			require_once('../protected/App/Views/app/perfilSeguindo.phtml');
+			$this->require('perfilSeguindo');
 
 		}
 
-		public function novaFoto(){
+		public function usuarioPerfil(){
 
 			$this->validaAutenticacao();
 
-			$foto = Container::getModel('Foto');
+			//recuperar informações do usuário
+			$usuario = Container::getModel('Usuario');
+			$usuario->__set('id', $_GET['usuario']);
 
-			//receber imagem
-			$imagem = filter_input(INPUT_POST, 'arquivo', FILTER_DEFAULT);
+			//verificar se usuário pesquisado é válido
+			if($usuario->getInfoUsuario() != ''){
+				$this->view->nome_usuario = $usuario->getInfoUsuario()['nome'];
+				$this->view->total_tweets = $usuario->getTotalTweets();
+				$this->view->total_seguindo = $usuario->getTotalSeguindo();
+				$this->view->total_seguidores = $usuario->getTotalSeguidores();
 
-			if($imagem != null){
-				$foto->__set('id_usuario', $_SESSION['id']);
+				//Verificar se estar seguindo ou não
+				$usuario_principal = Container::getModel('Usuario');
+				$usuario_principal->__set('id', $_SESSION['id']);
+				$this->view->seguindo_sn = $usuario_principal->verificarSeguirUsuario($_GET['usuario']);
 
-				//separar as informações da imagem base64
-				list($type, $imagem) = explode(';', $imagem);
+				//definir path da foto do usuário
+				$this->view->foto = $this->recuperarFoto($_GET['usuario']);
 
-				list(, $imagem) = explode(',', $imagem);
-
-				//desconverter a imagem base64
-				$imagem = base64_decode($imagem);
-
-				//atribuir a extensão da imagem PNG
-				$imagem_nome = time() . '.png';
-
-				$salvarFoto = file_put_contents('fotos_usuarios/' . $imagem_nome, $imagem);
-
-				$nomeDoArquivo = $imagem_nome;
-
-				//verificando existencia de foto
-				if($salvarFoto){
-					if($foto->verificarFotoExistente() > 0){
-						$path_arquivo = $foto->recuperarPath();
-
-						//if(unlink($path_arquivo->path)){
-						unlink($path_arquivo->path);
-						
-						$foto->excluirFoto();
-
-						//definindo lugar de salvamento
-						$path = 'fotos_usuarios/' . $imagem_nome;
-						$move_file = file_put_contents('fotos_usuarios/' . $imagem_nome, $imagem);
-
-						if($move_file == true){
-
-							$foto->__set('nome', $nomeDoArquivo);
-							$foto->__set('path', $path);
-
-							$foto->salvarFoto();
-
-							$_SESSION['path'] = $foto->__get('path');
-						  	//header('location: perfil?uploads=done');
-						  	echo json_encode("done");
-						}else{
-						  	//header('location: perfil?error=1');
-						  	echo json_encode("erro");
-						}
-					}
-					else{
-
-						//definindo lugar de salvamento
-						$path = 'fotos_usuarios/' . $imagem_nome;
-						$move_file = file_put_contents('fotos_usuarios/' . $imagem_nome, $imagem);
-
-						if($move_file == true){
-
-							$foto->__set('nome', $nomeDoArquivo);
-							$foto->__set('path', $path);
-
-							$foto->salvarFoto();
-						  	//header('location: perfil?uploads=done');
-						  	echo json_encode("done");
-						}else{
-							//header('location: perfil?erro=1');
-						  	echo json_encode("erro");
-						}
-					}
-				}
+				$this->render('usuarioPerfil');
 			}else{
-				header('location: perfil?erro=1');
+				$this->render('usuarioPerfil');
 			}
 
-			$foto->__set('id_usuario', $_SESSION['id']);
-
 		}
 
-		public function alterarNome(){
+		public function usuarioTweets(){
 
 			$this->validaAutenticacao();
 
+			//recuperar informações do usuário
+			$usuario = Container::getModel('Usuario');
+			$usuario->__set('id', $_GET['usuario']);
+			
+			$this->view->nome_usuario = $usuario->getInfoUsuario()['nome'];
+			$this->view->total_tweets = $usuario->getTotalTweets();
+			$this->view->total_seguindo = $usuario->getTotalSeguindo();
+			$this->view->total_seguidores = $usuario->getTotalSeguidores();
+
+			//recuperação dos tweets
+			$tweet = Container::getModel('Tweet');
+			$tweet->__set('id_usuario', $_SESSION['id']);
+			$tweet->__set('id_usuario_procurado', $_GET['usuario']);
+			$tweets = $tweet->getTweetsUsuario();
+
+			$this->view->tweets = $tweets;
+			
+			//$this->render('usuarioTweets');
+			$this->require('usuarioTweets');
+		}
+
+
+		public function usuarioSeguidores(){
+
+			$this->validaAutenticacao();
+			
+			$usuario = Container::getModel('Usuario');
+			$usuario->__set('id', $_GET['usuario']);
+
+			$this->view->nome_usuario = $usuario->getInfoUsuario()['nome'];
+			$this->view->total_tweets = $usuario->getTotalTweets();
+			$this->view->total_seguindo = $usuario->getTotalSeguindo();
+			$this->view->total_seguidores = $usuario->getTotalSeguidores();
+
+			//Recuperar seguidores
+			$usuarios = array();
+			
 			$usuario = Container::getModel('Usuario');
 			$usuario->__set('id', $_SESSION['id']);
-			$usuario->__set('nome', $_POST['nome']);
+			$usuario->__set('id_usuario_procurado', $_GET['usuario']);
+			$usuarios = $usuario->getUsuariosSeguidoresUsuario();
 
-			if(empty($_POST['nome'])){
-				die(header('location: perfil?erro=nome'));
+			$this->view->usuarios = $usuarios;
+
+			//$this->render('ususarioSeguidores');
+			$this->require('usuarioSeguidores');
+
+		}
+
+		public function usuarioSeguindo(){
+
+			$this->validaAutenticacao();
+			
+			$usuario = Container::getModel('Usuario');
+			$usuario->__set('id', $_GET['usuario']);
+			
+			$this->view->nome_usuario = $usuario->getInfoUsuario()['nome'];
+			$this->view->total_tweets = $usuario->getTotalTweets();
+			$this->view->total_seguindo = $usuario->getTotalSeguindo();
+			$this->view->total_seguidores = $usuario->getTotalSeguidores();
+
+			//Recuperar seguidores
+			$usuarios = array();
+			
+			$usuario = Container::getModel('Usuario');
+			$usuario->__set('id', $_SESSION['id']);
+			$usuario->__set('id_usuario_procurado', $_GET['usuario']);
+			$usuarios = $usuario->getUsuariosSeguindoUsuario();
+
+			$this->view->usuarios = $usuarios;
+
+			//$this->render('usuarioSeguindo');
+			$this->require('usuarioSeguindo');
+
+		}
+
+		public function editarPerfil(){
+
+			$this->validaAutenticacao();
+
+			try{
+				if(isset($_POST['arquivo'])){
+					$foto = Container::getModel('Foto');
+
+					//receber imagem
+					$imagem = filter_input(INPUT_POST, 'arquivo', FILTER_DEFAULT);
+
+					if($imagem != null){
+						$foto->__set('id_usuario', $_SESSION['id']);
+
+						//separar as informações da imagem base64
+						list($type, $imagem) = explode(';', $imagem);
+
+						list(, $imagem) = explode(',', $imagem);
+
+						//desconverter a imagem base64
+						$imagem = base64_decode($imagem);
+
+						//atribuir a extensão da imagem PNG
+						$imagem_nome = time() . '.png';
+
+						$salvarFoto = file_put_contents('fotos_usuarios/' . $imagem_nome, $imagem);
+
+						$nomeDoArquivo = $imagem_nome;
+
+						//verificando existencia de foto
+						if($salvarFoto){
+							if($foto->verificarFotoExistente() > 0){
+								$path_arquivo = $foto->recuperarPath();
+
+								//if(unlink($path_arquivo->path)){
+								unlink($path_arquivo->path);
+								
+								$foto->excluirFoto();
+
+								//definindo lugar de salvamento
+								$path = 'fotos_usuarios/' . $imagem_nome;
+								$move_file = file_put_contents('fotos_usuarios/' . $imagem_nome, $imagem);
+
+								if($move_file == true){
+
+									$foto->__set('nome', $nomeDoArquivo);
+									$foto->__set('path', $path);
+
+									$foto->salvarFoto();
+
+									$_SESSION['path'] = $foto->__get('path');
+								}else{
+								  	//header('location: perfil?error=1');
+								  	echo json_encode("erro");
+								}
+							}
+							else{
+
+								//definindo lugar de salvamento
+								$path = 'fotos_usuarios/' . $imagem_nome;
+								$move_file = file_put_contents('fotos_usuarios/' . $imagem_nome, $imagem);
+
+								if($move_file == true){
+
+									$foto->__set('nome', $nomeDoArquivo);
+									$foto->__set('path', $path);
+
+									$foto->salvarFoto();
+								}else{
+								  	echo json_encode("erro");
+								}
+							}
+						}
+					}else{
+						header('location: perfil?erro=1');
+					}
+
+					$foto->__set('id_usuario', $_SESSION['id']);
+				}
+
+				if(isset($_POST['nome'])){
+					$usuario = Container::getModel('Usuario');
+					$usuario->__set('id', $_SESSION['id']);
+					$usuario->__set('nome', $_POST['nome']);
+
+					$usuario->alterarNome();
+
+					$_SESSION['nome'] = $usuario->__get('nome');
+					//$this->view->teste = $usuario;
+				}
+
+			} finally {
+				echo json_encode("done");
 			}
-
-			$usuario->alterarNome();
-
-			$_SESSION['nome'] = $usuario->__get('nome');
-			$this->view->teste = $usuario;
-
-			header('location:perfil?alterarNome=done');
 
 		}
 
@@ -420,10 +524,10 @@
 
 		}
 
-		public function recuperarFoto(){
+		public function recuperarFoto($id){
 
 			$foto = Container::getModel('Foto');
-			$foto->__set('id_usuario', $_SESSION['id']);
+			$foto->__set('id_usuario', $id);
 
 			$foto->recuperarFoto();
 
@@ -443,7 +547,7 @@
 
 			if (!isset($_SESSION['id']) || $_SESSION['id'] == '' /*|| !isset($_SESSION['nome']) || $_SESSION['nome'] == ''*/) {
 				
-				header('location: /site_suamelhorface/projeto/projeto_8/?login=erro');
+				header('location: /projeto/projeto_8/?login=erro');
 
 			}
 

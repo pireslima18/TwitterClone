@@ -10,17 +10,13 @@
 
 		public function index(){
 
-			$this->view->login = isset($_GET['login']) ? $_GET['login'] : '';
+			if(isset($_GET['cadastro']) && $_GET['cadastro'] == 'success'){
+				$this->view->cadastro = $_GET['cadastro'];
+			}
 			$this->render('index');
 		}
 
 		public function inscreverse(){
-
-			$this->view->usuario = array(
-				'nome' => '',
-				'email' => '',
-				'senha' => ''
-			);
 
 			$this->view->erroCadastro = false;
 			
@@ -30,30 +26,24 @@
 
 		public function registrar(){
 
-			$usuario = Container::getModel('Usuario');
+			if(!empty($_POST['nome']) && !empty($_POST['email']) && !empty($_POST['senha'])){
+				$usuario = Container::getModel('Usuario');
+				$usuario->__set('nome', $_POST['nome']);
+				$usuario->__set('email', $_POST['email']);
+				$usuario->__set('senha', md5($_POST['senha']));
 
-			$usuario->__set('nome', $_POST['nome']);
-			$usuario->__set('email', $_POST['email']);
-			$usuario->__set('senha', md5($_POST['senha']));
+				if ($usuario->validarCadastro() && count($usuario->getUsuarioPorEmail()) == 0) {
+						
+						$usuario->salvar();
+	
+						echo json_encode(array('success' => true, 'redirect' => '/projeto/projeto_8/?cadastro=success'));
+				}else{
 
-			if ($usuario->validarCadastro() && count($usuario->getUsuarioPorEmail()) == 0) {
-					
-					$usuario->salvar();
-
-					$this->render('cadastro');
-
+					echo json_encode(array('success' => false, 'message' => 'Usuário já cadastrado'));
+				}
 			}else{
-
-				$this->view->usuario = array(
-					'nome' => $_POST['nome'],
-					'email' => $_POST['email'],
-					'senha' => $_POST['senha']
-				);
-
-				$this->view->erroCadastro = true;
-				$this->render('inscreverse');
+				echo json_encode(array('success' => false, 'message' => 'Preencha os campos necessários'));
 			}
-
 
 		}
 

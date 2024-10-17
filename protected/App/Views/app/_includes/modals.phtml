@@ -1,51 +1,48 @@
 <!-- Modals -->
 
-	<div class="modal fade" id="mudarFotoModal">
-	    <div class="modal-dialog modal-dialog-centered" role="document">
-		    <div class="modal-content" id="novaFoto">
-		    	<form action="novaFoto" method="post" enctype="multipart/form-data">
-					<div class="modal-header border-bottom">
-						<h5 class="modal-title">Editar foto</h5>
-						<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-						</button>
-					</div>
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
 
-					<div id="preview" class="d-none"></div>
+			<!-- modal-content editar -->
+			<div class="modal-content" id="modalContentEditarPerfil">
+				<div class="modal-header border-0">
+					<h5 class="modal-title" id="exampleModalLabel">Editar perfil</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
 
-					<img src="<?= !empty($_SESSION['path']) ? $_SESSION['path'] : 'fotos_usuarios/sem_foto.png'?>" class="rounded-circle mx-auto d-block mt-2" id="img" width="100px" height="100px">
-					<div class="modal-body bg-white">
-						<div class="form-group">
-						    <input type="file" accept="image/*" name="arquivo" class="form-control shadow " id="arquivo" required>
+				<div class="modal-body px-0 position-relative" style="width:100%;" id="editarPerfil">
+					<div class="perfil-capa mb-5" style="width:100%;height: 90px;"></div>
+					<form action="editarPerfil" method="post" enctype="multipart/form-data">
+						<img src="<?= !empty($_SESSION['path']) ? $_SESSION['path'] : 'fotos_usuarios/sem_foto.png'?>" class="rounded-circle d-block mt-2 position-absolute" style="top: 55px; left: 6px;" id="img" width="100px" height="100px">
+						<div class="">
+							<input type="file" accept="image/*" name="arquivo" class="form-control shadow d-none" id="arquivo">
 						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-						<button type="submit" class="btn btn-primary">Salvar mudança</button>
-					</div>
-				</form>
-		    </div>
-	    </div>
-	</div>
-	
-	<div class="modal fade" id="mudarNomeModal">
-	    <div class="modal-dialog modal-dialog-centered" role="document">
-		    <div class="modal-content">
-		    	<form action="alterarNome" method="post">
-					<div class="modal-header">
-						<h5 class="modal-title">Editar Nome</h5>
-						<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-						</button>
-					</div>
-					<div class="modal-body">
-					  <div class="form-group">
-					    <input type="text" name="nome" class="form-control" value="<?= $_SESSION['nome']?>">
-					  </div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-						<button type="submit" class="btn btn-primary">Salvar mudança</button>
-					</div>
-				</form>
-		    </div>
-	    </div>
+						<div class="mx-2" style="margin-top: 70px;">
+							<div class="form-floating mt-5">
+								<input type="text" class="form-control" id="editarNome" placeholder="Nome" value="<?= $_SESSION['nome']?>" maxlength="13" name="nome" required>
+								<label for="editarNome">Nome</label>
+							</div>
+						</div>
+						</div>
+						<div class="modal-footer">
+							<button type="submit" class="btn btn-primary rounded-pill disabled" id="submitEditarPerfil">Salvar</button>
+						</div>
+					</form>
+			</div>
+
+			<!-- modal-content aplicar -->
+			<div class="modal-content d-none" id="modalContentAplicar">
+				<div class="modal-header border-0">
+					<h5 class="modal-title"><button class="btn btn-outline-primary border-0" id="voltarEditarPerfil"><i class="fas fa-arrow-left"></i></button></h5>
+				</div>
+
+				<div class="modal-body px-0 position-relative" style="width:100%;" id="novaFoto">
+					<div id="preview" class=""></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary rounded-pill" id="aplicar">Aplicar</button>
+				</div>
+			</div>
+
+		</div>
 	</div>

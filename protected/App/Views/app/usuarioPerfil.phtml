@@ -5,133 +5,124 @@
 	  </div>
 	</div>
 </nav>
+<?php //echo"<pre>"; print_r($this->view->seguindo_sn); echo('</pre>'); ?>
 
-<div class="container mt-5">
-	<div class="row pt-2">
+<div class="mt-5">
+
+	<?php if(isset($this->view->nome_usuario)){?>
+	
+	<div class="perfil-info">
 		
-		<div class="col-md-3">
+		<div class="perfil-capa" style=""></div>
 
-			<div class="perfil">
-				<div class="perfilTopo">
+		<div class="perfil-foto"><img src="<?= !empty($this->view->foto) ? $this->view->foto : 'fotos_usuarios/sem_foto.png'?>"></div>
 
-				</div>
-
-				<div class="perfilPainel">
-					
-					<div class="row mt-2 mb-2">
-						<div class="col mb-2">
-							<span class="perfilPainelNome">
-								<?= $this->view->info_usuario['nome']?>
-							</span>
-						</div>
-					</div>
-
-					<div class="row mb-2">
-
-						<div class="col">
-							<span class="perfilPainelItem">Tweets</span><br />
-							<span class="perfilPainelItemValor" id="tweets">
-								
-								<?= $this->view->total_tweets['total_tweets'] ?>
-
-							</span>
-						</div>
-
-						<div class="col">
-							<span class="perfilPainelItem">Seguindo</span><br />
-							<span class="perfilPainelItemValor">
-								
-								<?= $this->view->total_seguindo['total_seguindo'] ?>
-
-							</span>
-						</div>
-
-						<div class="col">
-							<span class="perfilPainelItem">Seguidores</span><br />
-							<span class="perfilPainelItemValor">
-								
-								<?= $this->view->total_seguidores['total_seguidores'] ?>
-
-							</span>
-						</div>
-
-					</div>
-
-				</div>
-			</div>
-
-			<div class="quemSeguir">
-				<span class="quemSeguirTitulo">Quem seguir <i class="fas fa-search fa-xs"></i></span><br />
-				<hr />
-				<a href="quem_seguir" class="quemSeguirTxt"><p>Procurar por pessoas conhecidas<p></a>
-			</div>
-
-		</div>
-
-		<div class="col-md-6 divisaoTweet">
+		<div class="perfil-data">
 			
-			<div id="content"></div>
+			<div class="dados-perfil">
+				<p class="nomeUsuario">
+					<?= $this->view->nome_usuario?>
+				</p>
+			</div>
+			
+		</div>
+
+		<!-- Button trigger modal Mudar Foto -->
+		<div class="editar-perfil">
+		    <?php if($this->view->seguindo_sn == 0) {?>
+				<a href="acao?acao=seguir&id_usuario=<?=$_GET['usuario']?>" class="btn btn-outline-primary rounded-pill" id="seguir" value="<?=$_GET['usuario']?>">Seguir</a>
+			<?php }?>
+			
+			<?php if($this->view->seguindo_sn != 0) {?>
+				<a href="acao?acao=deixar_de_seguir&id_usuario=<?=$_GET['usuario']?>" class="btn btn-primary rounded-pill" id="deixar_de_seguir" value="<?=$_GET['usuario']?>">Seguindo</a>
+			<?php }?>
+		</div>
+
+
+		<?php include('_includes/modals.phtml'); ?>
+
+		<div class="perfil-tweets" style="">
+
+			<!-- Carregar informações da página (tweets, seguindo e seguidores) -->
+			<div id="content">
+				
+			</div>
 
 		</div>
 
 	</div>
 
-</div>
+	<?php }else{?>
+		<div class="card card-nullmessage border-0">
+			<div class="card-body text-center">
+				<img class="img-fluid" src="img/nullmessage4.png">
+				<h4 class="card-title text-muted">Este usuário não existe mais</h5>
+				<h6 class="card-subtitle mb-2 text-muted">Procuramos em todos os cantos do mundo, mas não há ninguém</h6>
+				<button class="btn btn-primary mt-2" id="voltarPagina">Voltar a navegar</button>
+			</div>
+		</div>
+	<?php }?>
 
-
-<div class="footer" id="footer">
-	<div class="icons">
-		<div class="row justify-content-center">
-			<div class="col-2 col-md-1 disabled">
-				<a href="timeline"><i class="fas fa-home"><span class="disabled-circle-home"></span></i></a>
-			</div>
-			<div class="col-2 col-md-1">
-				<a href="perfil"><i class="fas fa-user"></i></a>
-			</div>
-			<div class="col-2 col-md-1">
-				<a href="quem_seguir"><i class="fas fa-search"></i></a>
-			</div>
-			<div class="col-2 col-md-1">
-				<a href="#footer"><i class="fas fa-sign-out-alt"></i></a>
+	<div class="footer" id="footer">
+		<div class="icons">
+			<div class="row justify-content-center">
+				<div class="col-2 col-md-1">
+					<a href="timeline" id="timeline"><i class="fas fa-home"></i></a>
+				</div>
+				<div class="col-2 col-md-1">
+					<a href="perfil"><i class="fas fa-user"><span class="disabled-circle-profile"></span></i></a>
+				</div>
+				<div class="col-2 col-md-1">
+					<a href="quem_seguir" id="quem_seguir"><i class="fas fa-search"></i></a>
+				</div>
+				<div class="col-2 col-md-1">
+					<a href="#footer"><i class="fas fa-sign-out-alt"></i></a>
+				</div>
 			</div>
 		</div>
 	</div>
+
 </div>
 
 <script>
 $(document).ready(function() {
 
 	var tweets;
+	var seguindo;
 	var curtidas;
 	var comentarios;
 
+	// Obtém a string da URL
+    var urlParams = new URLSearchParams(window.location.search);
+
+    // Obtém o valor do parâmetro 'usuario'
+    var usuario = urlParams.get('usuario');
+
 	//carregar tweets
-    $.ajax({
+	$.ajax({
         type: 'GET',
-        url: 'tweets',
+        url: 'usuarioTweets?usuario=' + usuario,
         success: function(data) {
             $("#content").html(data);
         },
         error: function() {
-            alert("Erro ao carregar a view tweets.");
+            alert("Erro ao carregar a view seguindo.");
         }
     });
 
     // FUNÇÕES *************************************************************************************************************
-
-    //função para recuperar tweets
-    function carregarTweetsTimeline(){
-	    $.ajax({
-	        type: 'GET',
-	        url: 'tweets',
-	        success: function(data) {
-	            $("#content").html(data);
-	        },
-	        error: function() {
-	            alert("Erro ao carregar a view tweets.");
-	        }
-	    });
-    }
+    function carregarTweetsUsuario(){
+		$.ajax({
+            type: 'GET',
+            url: 'usuarioTweets?usuario=' + usuario,
+            success: function(data) {
+                $("#content").html(data);
+            },
+            error: function() {
+                alert("Erro ao carregar a view seguindo.");
+            }
+        });
+	}
 
     //função para recuperar comentários
 	function recuperarComentários(id_tweet){
@@ -147,9 +138,45 @@ $(document).ready(function() {
 	    });
 	}
 
+	function carregarSeguindoUsuario(){
+		$.ajax({
+            type: 'GET',
+            url: 'usuarioSeguindo?usuario=' + usuario,
+            success: function(data) {
+                $("#content").html(data);
+            },
+            error: function() {
+                alert("Erro ao carregar a view seguindo.");
+            }
+        });
+	}
+
+	function carregarSeguidoresUsuario(){
+		$.ajax({
+            type: 'GET',
+            url: 'usuarioSeguidores?usuario=' + usuario,
+            success: function(data) {
+                $("#content").html(data);
+            },
+            error: function() {
+                alert("Erro ao carregar a view de seguidores.");
+            }
+        });
+	}
+
     // Carregar views *************************************************************************************************************
+	//recuperar tweets
+    $("#content").on("click", "#tweets", function(){
+        carregarTweetsUsuario();
+    });
 
+    $("#content").on("click", "#seguindo", function(){
+        carregarSeguindoUsuario();
+    });
 
+    $("#content").on("click", "#seguidores", function(){
+        carregarSeguidoresUsuario();
+    });
 
     // FUNCIONALIDADES *************************************************************************************************************
 
@@ -158,36 +185,57 @@ $(document).ready(function() {
 		window.location.assign("usuarioPerfil?usuario=" + $(this).attr('value'));
 	});
 
-	//novo tweet
-    $("body").on("submit", "#tweetForm form", function(e){
+    // Utiliza o histórico do navegador para voltar uma página
+	$("body").on("click", "#voltarPagina", function(){
+      window.history.back();
+    })
+
+    //deixar de seguir
+    $("body").on("click", "a#deixar_de_seguir", function(e){
 		e.preventDefault();
 
-		//bloquear botão tweetar
-		$("#tweetar").attr('disabled', 'disabled');
-
-		//recuperar números de tweets
-		tweets = $("#tweets").html();
-		tweets = parseInt(tweets);
-
-		$.ajax({
-            type: 'post',
-            url: 'tweet',
-            data: $(this).serialize(),
-            dataType: 'json',
+        //alert($(this).attr('value'));
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'get',
             success: function(data) {
-        		carregarTweetsTimeline();
             },
             error: function() {
-                alert("Erro ao carregar a view pesquisar.");
+                alert("Erro ao carregar a view de seguindo.");
             }
-        });
+    	});
 
-        //alterar número de tweets
-    	$("#tweets").html((tweets + 1));
-    });
+    	//alterar botao deixar_de_seguir para seguir 
+        $(this).attr('href', 'acao?acao=seguir&id_usuario='+$(this).attr('value') +'&pagina=recuperarSeguindo');
+        $(this).attr('class', 'btn btn-outline-primary rounded-pill');
+        $(this).attr('id', 'seguir');
+        $(this).html('Seguir');
+	});
 
-    //curtir tweet
-    $("#content").on("click", "#curtir", function(e){
+    //seguir
+    $("body").on("click", "a#seguir", function(e){
+		e.preventDefault();
+
+        //alert($(this).attr('value'));
+        $.ajax({
+            url: $(this).attr('href'),
+            type: 'get',
+            success: function(data) {
+            },
+            error: function() {
+                alert("Erro ao carregar a view de seguindo.");
+            }
+    	});
+
+    	//alterar botao seguir para deixar_de_seguir 
+        $(this).attr('href', 'acao?acao=deixar_de_seguir&id_usuario='+$(this).attr('value') +'&pagina=recuperarSeguindo');
+        $(this).attr('class', 'btn btn-primary rounded-pill');
+        $(this).attr('id', 'deixar_de_seguir');
+        $(this).html('Seguindo');
+	});
+
+	//curtir tweet
+    $("body").on("click", "#curtir", function(e){
 		e.preventDefault();
 
 		//recuperar número de curtidas
@@ -216,7 +264,7 @@ $(document).ready(function() {
     });
 
     //descurtir tweet
-    $("#content").on("click", "#descurtir", function(e){
+    $("body").on("click", "#descurtir", function(e){
 		e.preventDefault();
 
 		//recuperar número de curtidas
